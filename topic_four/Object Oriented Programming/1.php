@@ -49,6 +49,14 @@
             font-size: medium;
 
         }
+
+        .student_page {
+            display: none;
+        }
+
+        #lecture {
+            display: none;
+        }
     </style>
 
 </head>
@@ -58,25 +66,127 @@
 <body>
 
     <?php
+    abstract class Human
+    {
+        public $name;
+        public $address;
+        public $sex;
+        public function __construct($name, $address, $sex)
+        {
+            $this->name = $name;
+            $this->address = $address;
+            $this->sex = $sex;
+        }
+        abstract public function toString();
+    }
 
-   
+    class Student extends Human
+    {
+        public $class;
+        public $major;
+        public function __construct($name, $address, $sex, $class, $major)
+        {
+            parent::__construct($name, $address, $sex);
+            $this->class = $class;
+            $this->major = $major;
+        }
+        public function rewardPoints()
+        {
+            if ($this->major == "CNTT") {
+                return 1;
+            } else if ($this->major == "Kinh tế") {
+                return 1.5;
+            }
+            return 0;
+        }
+        public function toString(){
+            $string = $this->name . "\n" . $this->address . "\n" .
+            $this->sex . "\n" . $this->class. "\n" . $this->major . "\n" . $this->rewardPoints();
+            return $string;
+        }
+    }
+    class Lecture extends Human
+    {
+        public $accademicLevel;
+        const salary = 1500000;
+        public function __construct($name, $address, $sex, $accademicLevel)
+        {
+            parent::__construct($name, $address, $sex);
+            $this->accademicLevel = $accademicLevel;
+        }
+        public function salaryCaculator()
+        {
+            if ($this->accademicLevel == "Cử nhân") {
+                return self::salary * 2.34;
+            } else if ($this->accademicLevel == "Thạc sĩ") {
+                return self::salary * 3.67;
+            }
+            return self::salary * 5.66;
+        }
+        public function toString(){
+            $string = $this->name . "\n" + $this->address . "\n" +
+            $this->sex . "\n" . $this->accademicLevel. "\n" + $this->salaryCaculator();
+            return $string;
+        }
+    }
+    $warning = "";
+    $result = "";
+    if (isset($_POST['name'])) {
+        $name = trim($_POST['name']);
+    } else {
+        $name = "";
+    }
+    if (isset($_POST['GT'])) {
+        $GT = trim($_POST['GT']);
+    } else {
+        $GT = "";
+    }
+    if (isset($_POST['staffType'])) {
+        $staffType = trim($_POST['staffType']);
+    } else {
+        $staffType = "";
+    }
+    if (isset($_POST['adrress'])) {
+        $adrress = trim($_POST['adrress']);
+    } else {
+        $adrress = "";
+    }
+    if (isset($_POST['class'])) {
+        $class = trim($_POST['class']);
+    } else {
+        $class = "";
+    }
+    if (isset($_POST['major'])) {
+        $major = trim($_POST['major']);
+    } else {
+        $major = "";
+    }
+    if (isset($_POST['Tinh'])) {
+        if ($staffType == "Student") {
+            $hs = new Student($name, $GT,$adrress,$class,$major);
+            $result = $hs->toString(); 
+        } else if ($staffType == "Sản xuất"){
+            
+        }
+    }
     ?>
 
-    <form align='center' action="2.php" method="post">
+    <form align='center' action="1.php" method="post">
 
-        <table style="width: 700px;">
+        <table>
             <thead>
 
-                <th colspan="4" align="center">
+                <th colspan="2" align="center">
                     <h3>QUẢN LÝ GIÁO DỤC</h3>
                 </th>
             </thead>
             <tr>
                 <td>Họ tên:</td>
                 <td><input colspan="1" type="text" name="name" value="<?php echo $name; ?>" /></td>
-                <td>Số con:</td>
-                <td><input style="width: 30%;" colspan="1" type="text" name="children"
-                        value="<?php echo $children; ?>" /></td>
+            </tr>
+            <tr>
+                <td>Địa chỉ:</td>
+                <td><input colspan="1" type="text" name="adrress" value="<?php echo $adrress; ?>" /></td>
             </tr>
             <tr>
                 <td>Giới tính:</td>
@@ -87,30 +197,39 @@
                         echo "checked"; ?> />Nữ
                 </td>
             </tr>
+
             <tr>
                 <td>Thuộc:</td>
                 <td>
-                    <input colspan="1" type="radio" value="Văn phòng" name="staffType" <?php if ($staffType == "Văn phòng")
+                    <input type="radio" value="Student" name="staffType" <?php if ($staffType == "Văn phòng")
                         echo "checked"; ?> />Học sinh
-                    <input colspan="1" type="radio" value="Sản xuất" name="staffType" <?php if ($staffType == "Sản xuất")
+                    <input type="radio" value="Lecture" name="staffType" <?php if ($staffType == "Sản xuất")
                         echo "checked"; ?> />Giáo viên
                 </td>
-
             </tr>
-            <tr>
-                <td></td>
-                <td colspan="3" align="center"><input type="submit" value="Tính lương" name="Tinh" />
+            <tr class="student_page">
+                <td>Lớp học:</td>
+                <td><input type="text" name="class" value="<?php echo $class; ?>" /></td>
             </tr>
-            <tr>
-                <td>Tiền thưởng:</td>
-                <td><input style="width: 60%;" colspan="1" type="text" name="thuong" disabled value="<?php echo $thuong; ?>" />
+            <tr class="student_page">
+                <td>Nghành học:</td>
+                <td><input type="text" name="major" value="<?php echo $major; ?>" /></td>
+            </tr>
+            <tr id="lecture">
+                <td>Trình độ:</td>
+                <td><input type="radio" value="Cử nhân" name="GT" <?php if ($GT == "Nam")
+                    echo "checked"; ?> />Cử nhân
+                    <input type="radio" value="Thạc sĩ" name="GT" <?php if ($GT == "Nữ")
+                        echo "checked"; ?> />Thạc sĩ
+                    <input type="radio" value="Tiến sĩ" name="GT" <?php if ($GT == "Nữ")
+                        echo "checked"; ?> />Tiến sĩ
                 </td>
-                <td>Tiền phạt:</td>
-                <td><input style="width: 60%;" colspan="1" type="text" name="phat" disabled value="<?php echo $phat; ?>" /></td>
             </tr>
             <tr>
-                <td  colspan="2" align="right">Thực lĩnh:</td>
-                <td  colspan="2" align="left"><input style="width: 60%;" colspan="1" disabled type="text" name="thucLinh" value="<?php echo $thucLinh; ?>" />
+                <td colspan="2" align="center"><input type="submit" value="Tính lương" name="Tinh" />
+            </tr>
+            <tr>
+                <td colspan="2"><textarea name="information" id="" cols="30" rows="10"><?php echo $result; ?></textarea>
                 </td>
             </tr>
         </table>
@@ -118,5 +237,29 @@
 </body>
 
 
+<script>
+    const staffType = document.getElementsByName("staffType")
+    var student_pages = document.getElementsByClassName("student_page");
+    //console.log(staffType)
+    var staffTypeValue;
+    for (var i = 0; i < staffType.length; i++) {
+        staffType[i].addEventListener("change", function () {
+            if (this.checked) {
+                var genderValue = this.value;
+                if (genderValue == "Student") {
+                    for (var i = 0; i < student_pages.length; i++) {
+                        student_pages[i].style.display = "inline-block";
+                    }
+                    document.getElementById("lecture").style.display = "none";
+                } else {
+                    for (var i = 0; i < student_pages.length; i++) {
+                        student_pages[i].style.display = "none";
+                    }
+                    document.getElementById("lecture").style.display = "inline-block";
+                }
+            }
+        });
+    }
+</script>
 
 </html>
