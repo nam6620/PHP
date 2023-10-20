@@ -81,7 +81,6 @@
         array_push($list, $arr);
         //printSV($list);
     }
-
     function tach($str, $list)
     {
         $aray = array();

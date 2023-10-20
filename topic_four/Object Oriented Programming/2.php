@@ -66,7 +66,7 @@
         public $workday;
         public $hesoluong;
         public $socon;
-        public $salary = 2000000;
+        protected const salary = 2000000;
         
         public function __construct($Name, $sex, $birthday,$workday, $hesoluong, $socon) {
             $this->Name = $Name;
@@ -109,7 +109,7 @@
             } 
         }
         function tienLuong() {
-            return $this->salary*$this->hesoluong - $this->tienPhat();
+            return self::salary*$this->hesoluong - $this->tienPhat();
         }
     }
     class SanPham extends NhanVien{
@@ -305,8 +305,7 @@
                 <td><input style="width: 60%;" colspan="1" type="text" name="phat" disabled value="<?php echo $phat; ?>" /></td>
             </tr>
             <tr>
-                <td  colspan="2" align="right">Thực lĩnh:</td>
-                <td  colspan="2" align="left"><input style="width: 60%;" colspan="1" disabled type="text" name="thucLinh" value="<?php echo $thucLinh; ?>" />
+                <td  colspan="4" align="center">Thực lĩnh: <input style="width: 40%;" colspan="1" disabled type="text" name="thucLinh" value="<?php echo $thucLinh; ?>" />
                 </td>
             </tr>
         </table>

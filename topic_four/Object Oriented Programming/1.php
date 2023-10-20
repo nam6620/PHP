@@ -59,6 +59,7 @@
         }
     </style>
 
+
 </head>
 
 
@@ -124,8 +125,8 @@
             return self::salary * 5.66;
         }
         public function toString(){
-            $string = $this->name . "\n" + $this->address . "\n" +
-            $this->sex . "\n" . $this->accademicLevel. "\n" + $this->salaryCaculator();
+            $string = $this->name . "\n" . $this->address . "\n" .
+            $this->sex . "\n" . $this->accademicLevel. "\n" . $this->salaryCaculator();
             return $string;
         }
     }
@@ -161,12 +162,18 @@
     } else {
         $major = "";
     }
+    if (isset($_POST['accademicLevel'])) {
+        $accademicLevel = trim($_POST['accademicLevel']);
+    } else {
+        $accademicLevel = "";
+    }
     if (isset($_POST['Tinh'])) {
         if ($staffType == "Student") {
             $hs = new Student($name, $GT,$adrress,$class,$major);
             $result = $hs->toString(); 
-        } else if ($staffType == "Sản xuất"){
-            
+        } else if ($staffType == "Lecture"){
+            $le = new Lecture($name, $GT,$adrress,$accademicLevel);
+            $result = $le->toString(); 
         }
     }
     ?>
@@ -201,9 +208,9 @@
             <tr>
                 <td>Thuộc:</td>
                 <td>
-                    <input type="radio" value="Student" name="staffType" <?php if ($staffType == "Văn phòng")
+                    <input type="radio" value="Student" name="staffType" <?php if ($staffType == "Student")
                         echo "checked"; ?> />Học sinh
-                    <input type="radio" value="Lecture" name="staffType" <?php if ($staffType == "Sản xuất")
+                    <input type="radio" value="Lecture" name="staffType" <?php if ($staffType == "Lecture")
                         echo "checked"; ?> />Giáo viên
                 </td>
             </tr>
@@ -217,12 +224,12 @@
             </tr>
             <tr id="lecture">
                 <td>Trình độ:</td>
-                <td><input type="radio" value="Cử nhân" name="GT" <?php if ($GT == "Nam")
-                    echo "checked"; ?> />Cử nhân
-                    <input type="radio" value="Thạc sĩ" name="GT" <?php if ($GT == "Nữ")
-                        echo "checked"; ?> />Thạc sĩ
-                    <input type="radio" value="Tiến sĩ" name="GT" <?php if ($GT == "Nữ")
-                        echo "checked"; ?> />Tiến sĩ
+                <td><input type="radio" value="Cử nhân" name="accademicLevel" <?php 
+                   ?> />Cử nhân
+                    <input type="radio" value="Thạc sĩ" name="accademicLevel" <?php 
+                      ?> />Thạc sĩ
+                    <input type="radio" value="Tiến sĩ" name="accademicLevel" <?php 
+                         ?> />Tiến sĩ
                 </td>
             </tr>
             <tr>
@@ -236,7 +243,6 @@
     </form>
 </body>
 
-
 <script>
     const staffType = document.getElementsByName("staffType")
     var student_pages = document.getElementsByClassName("student_page");
@@ -248,18 +254,19 @@
                 var genderValue = this.value;
                 if (genderValue == "Student") {
                     for (var i = 0; i < student_pages.length; i++) {
-                        student_pages[i].style.display = "inline-block";
+                        student_pages[i].style.display = "block";
                     }
                     document.getElementById("lecture").style.display = "none";
                 } else {
                     for (var i = 0; i < student_pages.length; i++) {
                         student_pages[i].style.display = "none";
                     }
-                    document.getElementById("lecture").style.display = "inline-block";
+                    document.getElementById("lecture").style.display = "block";
                 }
             }
         });
     }
 </script>
+
 
 </html>
