@@ -80,7 +80,6 @@
                 $warning = "Login failed";
             }
         }
-
     ?>
 
     <form align='center' action="login.php" method="post">

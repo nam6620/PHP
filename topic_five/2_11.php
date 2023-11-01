@@ -63,13 +63,32 @@
 
     <?php
     require_once("connect.php");
+    function generateNextMaSua($conn, $hangSuaPrefix) {
+        // Lấy mã sữa cao nhất trong bảng "sua" của hãng sữa cụ thể
+        $sql = "SELECT MAX(Ma_sua) AS MaxMaSua FROM sua WHERE Ma_sua LIKE '$hangSuaPrefix%'";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        $maxMaSua = $row['MaxMaSua'];
+    
+        // Tách phần số từ mã sữa hiện tại
+        $currentNumber = (int) substr($maxMaSua, strlen($hangSuaPrefix));
+    
+        // Tăng giá trị số lên 1
+        $nextNumber = $currentNumber + 1;
+    
+        // Định dạng lại số với số lượng chữ số cố định
+        $nextMaSua = $hangSuaPrefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    
+        return $nextMaSua;
+    }
     $warning = "";
-    mysqli_set_charset($conn, 'UTF8');
-    if (isset($_POST['maSua'])) {
-        $maSua = trim($_POST['maSua']);
-        echo $maSua;
+    $hangSuaPrefix = 'VNM';
+    $maSua = generateNextMaSua($conn, $hangSuaPrefix);
+    if (isset($_POST['tenSua'])) {
+        $tenSua = trim($_POST['tenSua']);
+        echo $tenSua;
     } else {
-        $maSua = "";
+        $tenSua = "";
     }
     if (isset($_POST['hangSua'])) {
         $hangSua = trim($_POST['hangSua']);
@@ -127,9 +146,11 @@
         if (empty($errors) == true) {
             if (isset($_POST['Them'])) {
                 move_uploaded_file($file_tmp, "C:\\xampp\\htdocs\\php\\excercive\\topic_five\\Hinh_sua\\" . $file_name);
-                $sql = "INSERT INTO sua(Ma_sua,Ten_sua,Ma_hang_sua,Ma_loai_sua,Trong_luong,Don_gia,Tp_Dinh_Duong,Loi_ich,Hinh)
-                VALUES ($maSua,$hangSua,$loaiSua,$trongLuong,$donGia,$thanhPhanDinhDuong,$loiIch,$file_name)";
+                $sql = "INSERT INTO sua (Ma_sua, Ten_sua, Ma_hang_sua, Ma_loai_sua, Trong_luong, Don_gia, TP_Dinh_Duong, Loi_ich, Hinh)
+                VALUES ('$maSua', '$tenSua', '$hangSua', '$loaiSua', '$trongLuong', '$donGia', '$thanhPhanDinhDuong', '$loiIch', '$file_name')";
                 mysqli_query($conn, $sql);
+                header("Location: 2_7.php?id=$maSua");
+                exit();
             }
             //echo "Upload File successfully!!!";
         } else {
@@ -150,7 +171,11 @@
             </thead>
             <tr>
                 <td>Mã sữa:</td>
-                <td><input colspan="1" type="text" name="maSua" value="<?php ?>" style="width: 100%;" /></td>
+                <td><input colspan="1" type="text" name="maSua" value="<?php echo $maSua?>" style="width: 100%;" /></td>
+            </tr>
+            <tr>
+                <td>Tên sữa:</td>
+                <td><input colspan="1" type="text" name="tenSua" value="<?php ?>" style="width: 100%;" /></td>
             </tr>
             <tr>
                 <td>Hãng sửa:</td>
